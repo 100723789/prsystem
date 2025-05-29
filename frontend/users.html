@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management | PRS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/scripts.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>Pandemic Resilience System</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+
+    <!-- Main page layout with sidebar and dashboard -->
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar-container"></nav>
+
+
+        <main class="dashboard">
+            <section class="chart-card">
+                <h2>User Statistics Table</h2>
+                <table class="user-table" id="userStatsTable">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    <footer class="footer">
+        <p>&copy; 100723789</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("jwt");
+            const role = parseInt(localStorage.getItem("userRole"));
+            // Only allow Admin to access this page
+            if (role !== 1) {
+                alert("Access denied.");
+                window.location.href = "index.html";
+                return;
+            }
+            // Fetch user list from backend
+
+
+            fetch("https://prsystem.ct.ws/api/api.php?users", {
+                headers: { "Authorization": "Bearer " + token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector("#userStatsTable tbody");
+                // Loop through each user and build table rows
+                data.forEach(user => {
+                    const row = document.createElement("tr");
+                    // Create dropdown for role change
+                    const roleSelect = document.createElement("select");
+                    roleSelect.className = "custom-role-select";
+                    [1, 2, 3].forEach(r => {
+                        const option = document.createElement("option");
+                        option.value = r;
+                        option.textContent = 
+                            r === 1 ? "Government Official" :
+                            r === 2 ? "Merchant" :
+                            "Public Member";
+                        if (r == user.role_id) option.selected = true;
+                        roleSelect.appendChild(option);
+                    });
+                    // Update role button
+                    const changeBtn = document.createElement("button");
+                    changeBtn.textContent = "Update Role";
+                    changeBtn.className = "update-role-btn";
+
+                    changeBtn.onclick = () => {
+                        updateUserRole(user.user_id, parseInt(roleSelect.value));
+                    };
+                    // Add username and email
+                    row.innerHTML = `<td>${user.username}</td><td>${user.email}</td>`;
+                    // Add role text
+const tdRole = document.createElement("td");
+tdRole.textContent =
+    user.role_id === 1 ? "Government Official" :
+    user.role_id === 2 ? "Merchant" :
+    "Public Member";
+
+                    // Add action buttons
+                    const tdAction = document.createElement("td");
+                    tdAction.appendChild(roleSelect);
+                    tdAction.appendChild(changeBtn);
+
+                    // Creates delete button
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.textContent = "✕";
+                    deleteBtn.className = "delete-user-btn";
+                    deleteBtn.title = "Delete User";
+                    deleteBtn.onclick = () => {
+                        if (confirm(`Are you sure you want to delete ${user.username}?`)) {
+                            deleteUser(user.user_id);
+                        }
+                    };
+                    tdAction.appendChild(deleteBtn);
+                    row.appendChild(tdRole);
+                    row.appendChild(tdAction);
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(err => {
+                console.error("Failed to load users:", err);
+            });
+        });
+        // Update users role by admin
+        function updateUserRole(userId, newRoleId) {
+            const token = localStorage.getItem("jwt");
+            fetch("https://prsystem.ct.ws/api/api.php?update-role", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({ user_id: userId, new_role: newRoleId })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || "Role updated");
+                location.reload();
+            })
+            .catch(err => {
+                console.error("Failed to update role:", err);
+                alert("Failed to update role.");
+            });
+        }
+
+        // Logs out the user
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        // function that deletes a user by sending request to the backend
+        function deleteUser(userId) {
+        const token = localStorage.getItem("jwt");
+        fetch("https://prsystem.ct.ws/api/api.php?delete-user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ user_id: userId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message || "User deleted");
+            location.reload();
+        })
+        .catch(err => {
+            console.error("Failed to delete user:", err);
+            alert("Failed to delete user.");
+        });
+    }
+
+    </script>
+</body>
+</html>

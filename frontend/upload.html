@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload File | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Inline styles specific to this page -->
+  <style>
+    /* Full-page layout setup */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      background-color: #fff0f5;
+      font-family: Arial, sans-serif;
+    }
+    
+
+    /* Centers the upload box */
+    .main-container {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    /* Styling for the upload form box */
+    .upload-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      max-height: 500px;
+      overflow: hidden;
+    }
+    /* Button styles */
+    .form-btn {
+      background-color: #ff5c8a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .form-btn:hover {
+      background-color: #e04c79;
+    }
+    /* File input layout and hiding native UI */
+    .file-input-wrapper {
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: 40px;
+      margin-bottom: 5px; /* tighten spacing */
+    }
+    
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .file-input-wrapper .custom-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #ff5c8a;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    /* Shows selected file name */
+    .file-path {
+      margin-bottom: 20px;
+      font-weight: normal;
+      font-size: 14px;
+      color: rgb(44, 0, 60);
+    }
+    
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- Main form container -->
+  <div class="main-container">
+    <div class="upload-box">
+      <h2>Upload a File</h2>
+      <!-- Upload form -->
+      <form id="uploadForm">
+        <div class="file-input-wrapper">
+          <!-- Hidden file input -->
+          <input type="file" name="file" id="fileInput" required>
+          <label class="custom-btn" for="fileInput">Choose a File</label>
+        </div>
+        <!-- Display chosen file name -->
+        <div id="fileName" class="file-path"></div>
+
+        <!-- Submit upload button -->
+        <button type="submit" class="form-btn">Upload</button>
+      </form>
+      <!-- Message area for success/failure -->
+      <div id="message"></div>
+      <br><br><br>
+      <a href="index.html" class="form-btn" style="margin-top: 20px;">Back to Dashboard</a>
+    </div>
+  </div>
+  <!-- Upload logic -->
+<script src="js/scripts.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof setupUploadForm === "function") {
+      setupUploadForm();
+    } else {
+      console.error("setupUploadForm is not defined");
+    }
+  });
+</script>
+
+
+
+
+</body>
+</html>

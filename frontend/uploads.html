@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Uploaded Files | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- External styling -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Page-specific styles -->
+  <style>
+    .container {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    h2 {
+      color: #d63384;
+      text-align: center;
+    }
+    ul#fileList {
+      list-style: none;
+      padding-left: 0;
+    }
+    ul#fileList li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.7rem 0;
+      background: #fff0f5;
+      padding: 0.75rem 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    ul#fileList li a {
+      color: #d63384;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    ul#fileList li a:hover {
+      text-decoration: underline;
+    }
+    .delete-btn {
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .delete-btn:hover {
+      background-color: #e64949;
+    }
+    .back-btn {
+      display: block;
+      margin: 2rem auto;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- App Header -->
+  <header class="header">
+    <h1>Pandemic Resilience System</h1>
+    <a href="index.html" class="form-btn">Back to Dashboard</a>
+  </header>
+  <!-- File listing section -->
+<main>
+  <div class="container">
+    <h2>Uploaded Files</h2>
+    <ul id="fileList"></ul> <!-- List of uploaded files populated by JS -->
+    <div class="back-btn">
+      <a href="upload.html" class="form-btn">Upload Another File</a>
+    </div>
+  </div>
+
+</main>
+
+<script src="js/scripts.js"></script>
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", setupUploadsView);
+</script>
+</body>
+</html>
+
+
+
+</body>
+</html>

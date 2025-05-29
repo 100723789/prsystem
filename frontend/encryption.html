@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encryption Keys | PRS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Load Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Page header -->
+    <header class="header">
+        <h1>Pandemic Resilience System</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <!-- Main page layout with sidebar and dashboard -->
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar-container"></nav>
+
+
+        <main class="dashboard">
+            <!-- Stats summary and pie chart -->
+            <section class="chart-card">
+                <h2>Encryption Key Stats</h2>
+                <p id="totalKeys"></p>
+                <p id="uniqueOwners"></p>
+                <p id="mostCommonType"></p>
+                <canvas id="keyChart"></canvas>
+            </section>
+
+            <!-- Table showing raw encryption key records -->
+            <section class="chart-card">
+                <h2>Encryption Keys</h2>
+                <table class="user-table" id="encryptionTable">
+                    <thead>
+                        <tr>
+                            <th>Key Type</th>
+                            <th>Owner</th>
+                            <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- Page footer -->
+    <footer class="footer">
+        <p>&copy; 100723789</p>
+    </footer>
+
+    <!-- Global site script -->
+    <script src="js/scripts.js"></script>
+    <!-- Fetch and display encryption key data -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.pathname.includes("encryption.html")) {
+        loadEncryptionKeys();
+    }
+});
+</script>
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const role = parseInt(localStorage.getItem("userRole"));
+
+    // Block access if not admin
+    if (role !== 1) {
+        alert("Access denied.");
+        window.location.href = "index.html";
+    }
+});
+</script>
+
+</body>
+</html>

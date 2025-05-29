@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vaccination Records | PRS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="js/scripts.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>Pandemic Resilience System</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar-container"></nav>
+
+        <main class="dashboard">
+            <section class="chart-card" id="summarySection">
+                <h2>Vaccination Summary</h2>
+                <p id="totalRecords"></p>
+                <p id="uniqueUsers"></p>
+                <p id="avgDoses"></p>
+                <p id="mostUsedVaccine"></p>
+                <canvas id="vaccineChart"></canvas>
+            </section>
+
+            <section class="chart-card">
+                <h2>Vaccination Records</h2>
+                <table class="user-table" id="vaccinationTable">
+                    <thead>
+                        <tr id="tableHeader">
+                            <th>User ID</th>
+                            <th>Vaccine</th>
+                            <th>Dose</th>
+                            <th>Date</th>
+                            <th>Provider</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 100723789</p>
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("jwt");
+        const role = parseInt(localStorage.getItem("userRole"));
+
+        if (!token) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (role === 3) {
+            document.getElementById("summarySection").style.display = "none";
+            document.getElementById("tableHeader").innerHTML = `
+                <th>Vaccine</th>
+                <th>Dose</th>
+                <th>Date</th>
+                <th>Provider</th>`;
+        }
+
+        const endpoint = role === 3 
+            ? "https://prsystem.ct.ws/api/api.php?my-vaccinations" 
+            : "https://prsystem.ct.ws/api/api.php?vaccination-records";
+
+        fetch(endpoint, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data)) throw new Error("Invalid data format");
+            const tbody = document.querySelector("#vaccinationTable tbody");
+            const vaccineCounts = {};
+            const userSet = new Set();
+
+            data.forEach(record => {
+                const row = document.createElement("tr");
+                row.innerHTML = role === 3
+                    ? `<td>${record.vaccine_name}</td><td>${record.dose_number}</td><td>${record.date_administered}</td><td>${record.provider}</td>`
+                    : `<td>${record.user_id}</td><td>${record.vaccine_name}</td><td>${record.dose_number}</td><td>${record.date_administered}</td><td>${record.provider}</td>`;
+                tbody.appendChild(row);
+
+                if (role !== 3) {
+                    userSet.add(record.user_id);
+                    vaccineCounts[record.vaccine_name] = (vaccineCounts[record.vaccine_name] || 0) + 1;
+                }
+            });
+
+            if (role !== 3) {
+                const total = data.length;
+                const uniqueUsers = userSet.size;
+                const avgDoses = (total / uniqueUsers).toFixed(2);
+                const mostUsed = Object.entries(vaccineCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
+
+                document.getElementById("totalRecords").textContent = "Total Vaccination Records: " + total;
+                document.getElementById("uniqueUsers").textContent = "Unique Users Vaccinated: " + uniqueUsers;
+                document.getElementById("avgDoses").textContent = "Average Doses per User: " + avgDoses;
+                document.getElementById("mostUsedVaccine").textContent = "Most Used Vaccine: " + mostUsed;
+
+                const ctx = document.getElementById("vaccineChart").getContext("2d");
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(vaccineCounts),
+                        datasets: [{
+                            data: Object.values(vaccineCounts),
+                            backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#a8dadc', '#ffb6b9']
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.error("Failed to load vaccination records:", err);
+        });
+    });
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+    </script>
+</body>
+</html>

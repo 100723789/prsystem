@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audit Logs | PRS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to custom stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Chart.js library for rendering charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header section with logout button -->
+    <header class="header">
+        <h1>Pandemic Resilience System</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <!-- Main layout: sidebar and main dashboard -->
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar-container"></nav>
+
+
+        <main class="dashboard">
+
+            <!-- Summary metrics and chart -->
+            <section class="chart-card">
+                <h2>Audit Log Summary</h2>
+                <p id="totalLogs"></p>
+                <p id="uniqueUsersLog"></p>
+                <p id="mostActiveUser"></p>
+                <canvas id="actionChart"></canvas>
+            </section>
+
+            <!-- Detailed audit logs table -->
+            <section class="chart-card">
+                <h2>Audit Logs</h2>
+                
+                <table class="user-table" id="auditTable">
+<thead>
+  <tr>
+    <th>User ID</th>
+    <th>Action</th>
+    <th>Entity</th>
+    <th>Record ID</th>
+    <th>Timestamp</th>
+  </tr>
+</thead>
+
+                    <tbody></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="footer">
+        <p>&copy; 100723789</p>
+    </footer>
+
+    <!-- Global scripts -->
+    <script src="js/scripts.js"></script>
+
+    <!-- Load and display audit logs -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  if (window.location.pathname.includes("audit_logs.html")) {
+    loadAuditLogs();
+  }
+});
+</script>
+
+
+
+
+
+
+</body>
+</html>

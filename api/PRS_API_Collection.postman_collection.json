@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "PRS API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://prsystem.ct.ws/api/api.php?users",
+          "protocol": "https",
+          "host": [
+            "prsystem",
+            "ct",
+            "ws"
+          ],
+          "path": [
+            "api",
+            "api.php"
+          ],
+          "query": [
+            {
+              "key": "users"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"newuser\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password123\",\n    \"role_id\": 3\n}"
+        },
+        "url": {
+          "raw": "https://prsystem.ct.ws/api/api.php?users",
+          "protocol": "https",
+          "host": [
+            "prsystem",
+            "ct",
+            "ws"
+          ],
+          "path": [
+            "api",
+            "api.php"
+          ],
+          "query": [
+            {
+              "key": "users"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "https://prsystem.ct.ws/api/api.php?login",
+          "protocol": "https",
+          "host": [
+            "prsystem",
+            "ct",
+            "ws"
+          ],
+          "path": [
+            "api",
+            "api.php"
+          ],
+          "query": [
+            {
+              "key": "login"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Upload File",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your_jwt_token>"
+          },
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://prsystem.ct.ws/api/api.php?upload",
+          "protocol": "https",
+          "host": [
+            "prsystem",
+            "ct",
+            "ws"
+          ],
+          "path": [
+            "api",
+            "api.php"
+          ],
+          "query": [
+            {
+              "key": "upload"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

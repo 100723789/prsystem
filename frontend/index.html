@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PRS Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Load Chart.js library -->
+    <script src="js/chart.umd.js"></script>
+    <!-- Load global scripts -->
+    <script src="js/scripts.js"></script>
+</head>
+
+<body>
+
+<!-- Role greeting logic -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem("jwt");
+    const roleId = parseInt(localStorage.getItem("userRole"));
+    // Redirect unauthenticated users
+    if (!token) {
+        window.location.href = "login.html";
+    }
+
+    // Determine role label
+    let roleName = "User";
+    if (roleId === 1) roleName = "Admin";
+    else if (roleId === 2) roleName = "Merchant";
+    else if (roleId === 3) roleName = "Public Member";
+
+const email = localStorage.getItem("userEmail") || "User";
+const username = email.split('@')[0]; // Remove domain
+const displayName = username.charAt(0).toUpperCase() + username.slice(1);
+
+const header = document.querySelector("header h1");
+if (header) {
+    header.textContent += " – Welcome, " + displayName;
+}
+
+});
+</script>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Pandemic Resilience System</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <!-- Page layout -->
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar-container"></nav>
+
+        <!-- Dashboard content with charts -->
+        <main class="dashboard">
+
+            <!-- Vaccination Bar Chart -->
+            <section class="chart-card">
+                <h2>Vaccination Trends</h2>
+                <canvas id="barChart"></canvas>
+            </section>
+
+            <!-- Population Pie Chart -->
+            <section class="chart-card">
+                <h2>Population Coverage</h2>
+                <canvas id="pieChart"></canvas>
+            </section>
+
+            <!-- Vaccination Line Chart -->
+            <section class="chart-card">
+                <h2>Vaccination Timeline</h2>
+                <canvas id="lineChart"></canvas>
+            </section>
+
+            <!-- Role Radar Chart -->
+            <section class="chart-card">
+                <h2>Role Comparison</h2>
+                <canvas id="radarChart"></canvas>
+            </section>
+            
+            <!-- Upload Doughnut Chart -->
+            <section class="chart-card">
+                <h2>Upload Distribution</h2>
+                <canvas id="doughnutChart"></canvas>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 100723789</p>
+    </footer>
+
+
+
+
+<!-- Logout function -->
+<script>
+function logout() {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("userRole");
+    window.location.href = "login.html";
+}
+
+// Sidebar role-based menu injection
+document.addEventListener("DOMContentLoaded", function () {
+    const role = parseInt(localStorage.getItem("userRole"));
+    const sidebar = document.getElementById("sidebar-container");
+
+    if (!sidebar) return;
+
+    // Always show dashboard
+    let links = `
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+    `;
+
+    // Admin menu
+    if (role === 1) {
+        links += `
+            <li><a href="vaccination.html">Vaccination Records</a></li>
+            <li><a href="users.html">User Management</a></li>
+            <li><a href="audit_logs.html">Audit Logs</a></li>
+            <li><a href="encryption.html">Encryption Keys</a></li>
+            <li><a href="uploads.html">View Uploads</a></li>
+        `;
+    
+    
+    // Merchant menu
+    } else if (role === 2) {
+        links += `
+            <li><a href="doctor_appointments.html">My Appointments</a></li>
+            <li><a href="vaccination.html">Patient Vaccination Records</a></li>
+            <li><a href="upload.html">Upload Reports</a></li>
+            <li><a href="uploads.html">View Uploads</a></li>
+            <li><a href="profile.html">My Profile</a></li>
+        `;
+    
+    
+    // User menu
+    } else if (role === 3) {
+        links += `
+            <li><a href="vaccination.html">My Vaccines</a></li>
+            <li><a href="upload.html">Upload a File</a></li>
+            <li><a href="profile.html">My Profile</a></li>
+        `;
+    }
+
+    links += `</ul>`;
+    sidebar.innerHTML = links;
+});
+</script>
+
+</body>
+</html>

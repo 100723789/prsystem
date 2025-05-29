@@ -1,0 +1,22 @@
+RewriteEngine On
+
+
+RewriteCond %{QUERY_STRING} (^|&)delete-upload(&|$)
+RewriteRule ^api/?$ api/api.php [QSA,L]
+
+# Skip rewrite for static uploads
+RewriteCond %{REQUEST_URI} ^/api/uploads/
+RewriteRule ^ - [L]
+
+# Default: route /api to api.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/?$ api/api.php [QSA,L]
+
+# Fix for stripped headers
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+# Allow viewing of common files
+<FilesMatch "\.(pdf|txt|jpg|jpeg|png|gif|html)$">
+  ForceType None
+  Header set Content-Disposition inline
+</FilesMatch>
