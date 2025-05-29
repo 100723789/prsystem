@@ -8,16 +8,6 @@ Access the system here: https://prsystem.ct.ws/login.html
 Login Credentials
 Use one of the following test accounts to log in:
 
-Admin
-- Email: admin@example.com
-- Password: admin
-
-Doctor
-- Email: doctor@example.com
-- Password: john
-
-Public Member
-- You can register using the registration form on the website, or use:
   - Email: user@gmail.com
   - Password: user
 
