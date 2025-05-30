@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    // Get stored user session data
     const token = localStorage.getItem("jwt");
     const role = parseInt(localStorage.getItem("userRole"));
     const sidebarContainer = document.getElementById("sidebar-container");
@@ -7,11 +8,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("registerForm");
     const logoutButton = document.querySelector(".logout-btn");
 
+    // Redirect if not logged in and not on login/register page
     if (!token && !loginForm && !registerForm) {
         window.location.href = "login.html";
         return;
     }
 
+    // Generate sidebar menu based on user role
     if (sidebarContainer) {
         let links = `<li><a href="index.html">Dashboard</a></li>`;
 
@@ -38,7 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         sidebarContainer.innerHTML = `<ul>${links}</ul>`;
 
+// Inject a public user dashboard with appointment form and audit log
 if (role === 3 && window.location.pathname.includes("index.html")) {
+    // Setup event listener for appointment booking
     const dashboard = document.querySelector(".dashboard");
 
     if (dashboard) {
@@ -125,7 +130,7 @@ if (role === 3 && window.location.pathname.includes("index.html")) {
                 });
             });
         }
-        // Load audit logs after the HTML is set
+        // Load data after dashboard is injected
         loadUserAuditLogs();
         loadDoctors();
     }
@@ -133,6 +138,7 @@ if (role === 3 && window.location.pathname.includes("index.html")) {
     return;
 
 }}
+    // Logout functionality
     if (logoutButton) {
         logoutButton.addEventListener("click", function () {
             localStorage.clear();
@@ -140,6 +146,7 @@ if (role === 3 && window.location.pathname.includes("index.html")) {
         });
     }
 
+    // Handle login form submission
     if (loginForm) {
         loginForm.addEventListener("submit", function (e) {
             e.preventDefault();
@@ -168,6 +175,8 @@ if (role === 3 && window.location.pathname.includes("index.html")) {
                 });
         });
     }
+
+// Load doctors into dropdown for public users
 function loadDoctors() {
   fetch("https://prsystem.ct.ws/api/api.php?doctors", {
     headers: {
@@ -193,6 +202,7 @@ function loadDoctors() {
   });
 }
 
+    // Handle registration form
     if (registerForm) {
         registerForm.addEventListener("submit", function (e) {
             e.preventDefault();
@@ -318,11 +328,12 @@ function loadDoctors() {
                         }]
                     }
                 });
-            }); // this closes .then for charts
-        } // this closes if (document.getElementById("barChart"))
-    }// this closes document.addEventListener
+            });
+        }
+    }
 );
 
+// Vaccination table population
 if (window.location.pathname.includes("vaccination.html")) {
     const endpoint = role === 3 ? "my-vaccinations" : "vaccination-records";
 
@@ -356,7 +367,7 @@ if (window.location.pathname.includes("vaccination.html")) {
     });
 }
 
-
+// - loadAuditLogs() → loads all audit logs (admin)
 function loadAuditLogs() {
   const token = localStorage.getItem("jwt");
   const role = parseInt(localStorage.getItem("userRole"));
@@ -432,6 +443,7 @@ function loadAuditLogs() {
     });
 }
 
+// - loadUserAuditLogs() → loads logs for current user
 function loadUserAuditLogs() {
   const token = localStorage.getItem("jwt");
   if (!token) return;
@@ -493,12 +505,7 @@ function loadUserAuditLogs() {
   });
 }
 
-
-
-
-
-
-
+// - loadEncryptionKeys() → loads encryption key stats and renders chart
 function loadEncryptionKeys() {
     const token = localStorage.getItem("jwt");
     const role = parseInt(localStorage.getItem("userRole"));
@@ -564,8 +571,7 @@ function loadEncryptionKeys() {
     });
 }
 
-
-
+// - setupUploadForm() → handles secure file uploads
 function setupUploadForm() {
   const form = document.getElementById("uploadForm");
   const message = document.getElementById("message");
@@ -623,6 +629,7 @@ const res = await fetch("/api/api.php?upload=true", {
   });
 }
 
+// - setupUploadsView() → handles file listing and deletion
 function setupUploadsView() {
   const token = localStorage.getItem("jwt");
   if (!token) {
@@ -642,6 +649,8 @@ function setupUploadsView() {
 
   loadFiles(currentUserRole);
 }
+
+// load files
 function loadFiles(currentUserRole) {
   fetch("https://prsystem.ct.ws/api/api.php?uploads", {
     headers: { Authorization: "Bearer " + localStorage.getItem("jwt") }
@@ -675,6 +684,7 @@ buttonGroup.style.gap = "10px";
 
 buttonGroup.appendChild(downloadBtn);
 
+// if admin...
 if (currentUserRole === 1) {
   const delBtn = document.createElement("button");
   delBtn.textContent = "Delete";
@@ -697,7 +707,7 @@ li.appendChild(buttonGroup); // Buttons now grouped cleanly on the right
 }
 
 
-
+// - deleteFile() → deletes a file if admin only
 function deleteFile(filename) {
   const confirmed = confirm(`Are you sure you want to delete "${filename}"?`);
   if (!confirmed) return;
@@ -726,7 +736,7 @@ fetch("https://prsystem.ct.ws/api/api.php?delete-upload", {
 
 
 
-
+// - bookAppointmentForm() → book appointment form
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("bookAppointmentForm");
 
@@ -777,6 +787,8 @@ document.addEventListener("DOMContentLoaded", function () {
   dateInput.addEventListener("change", fetchAvailableSlots);
   doctorInput.addEventListener("change", fetchAvailableSlots);
 
+
+// - fetchAvailableSlots() → fetches available time slots for appointment
   function fetchAvailableSlots() {
     const date = dateInput.value;
     const doctorId = doctorInput.value;
@@ -817,7 +829,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
+// Logout function
 function logout() {
     localStorage.removeItem("jwt");
     localStorage.removeItem("userRole");
