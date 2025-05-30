@@ -53,6 +53,8 @@ function log_action($user_id, $action, $entity, $record_id = null) {
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+
+/** AUTH & USER MANAGEMENT **/
 // Login
 if ($method === 'POST' && isset($_GET['login'])) {
     $data = json_decode(file_get_contents("php://input"), true);
@@ -146,6 +148,7 @@ if ($method === 'GET' && isset($_GET['my-vaccinations'])) {
     exit;
 }
 
+// Update user role (admin only)
 if ($method === 'POST' && isset($_GET['update-role'])) {
     authenticate();
     $payload = decodeUser();
@@ -176,6 +179,7 @@ if ($method === 'POST' && isset($_GET['update-role'])) {
     exit;
 }
 
+// Delete a user (admin only)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['delete-user'])) {
     authenticate();
     $payload = decodeUser();
@@ -282,9 +286,7 @@ if ($method === 'POST' && isset($_GET['upload'])) {
     exit;
 }
 
-
-
-
+// Delete uploaded file (admin only)
 if ($method === 'POST' && isset($_GET['delete-upload'])) {
     file_put_contents(__DIR__ . '/debug_test.txt', "DELETE block reached\n", FILE_APPEND);
 
@@ -332,11 +334,9 @@ $data = json_decode($rawPost, true);
     exit;
 }
 
+/** AUDIT & SECURITY **/
 
-
-
-
-
+// View audit logs (admin)
 if (isset($_GET['audit-logs'])) {
     authenticate();
     $payload = decodeUser();
@@ -354,7 +354,7 @@ if (isset($_GET['audit-logs'])) {
     exit;
 }
 
-
+// Encryption keys
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['encryption-keys'])) {
     authenticate();
     $payload = decodeUser();
@@ -372,7 +372,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['encryption-keys'])) {
     exit;
 }
 
-
+// Change password
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['change-password'])) {
     authenticate(); // verifies and sets user context
     $payload = decodeUser();
@@ -459,7 +459,7 @@ $stmt->execute([$user_id, $date, $time, $doctor_id]);
     exit;
 }
 
-
+// View doctor's appointments
 if (isset($_GET['view-appointments'])) {
     authenticate();
     $payload = decodeUser();
@@ -560,7 +560,7 @@ if ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete-
     exit;
 }
 
-
+// Update appointment status
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'update-appointment-status') {
     authenticate();
     $payload = decodeUser();
