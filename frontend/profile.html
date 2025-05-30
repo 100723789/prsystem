@@ -9,14 +9,18 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<!-- Profile page layout -->
 <div class="profile-page-container">
   <div class="profile-card">
   <h2>My Profile</h2>
+
+<!-- Display user's email and role -->
   <p id="user-email">Email: </p>
   <p id="user-role">Role: </p>
   <a href="index.html" class="form-btn" style="margin-top: 20px;">Back to Dashboard</a>
   <hr style="margin: 2rem 0;">
 
+<!-- Change password form -->
   <h3>Change Password</h3>
   <form id="changePasswordForm">
     <div class="form-group">
@@ -27,6 +31,8 @@
       <label for="newPassword">New Password</label>
       <input type="password" id="newPassword" placeholder="Enter a new password" required>
     </div>
+
+<!-- Submit button -->
     <button type="submit" class="form-btn">Update Password</button>
     <p id="passwordChangeMsg" style="margin-top: 1rem;"></p>
     
@@ -45,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
     else if (roleId === 3) roleName = "Public Member";
 
     let email = "N/A";
+
+// Decode JWT to get user email
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
@@ -54,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Populate the page with email and role
+// Set email and role on the page
     document.getElementById("user-email").textContent = "Email: " + email;
     document.getElementById("user-role").textContent = "Role: " + roleName;
 });
@@ -80,12 +88,14 @@ document.getElementById("changePasswordForm").addEventListener("submit", functio
     const token = localStorage.getItem("jwt");
     const message = document.getElementById("passwordChangeMsg");
 
+// Basic validation
     if (!oldPassword || !newPassword) {
         message.textContent = "Please fill in both fields.";
         message.style.color = "red";
         return;
     }
 
+// Send POST request to change password
     fetch("https://prsystem.ct.ws/api/api.php?change-password", {
         method: "POST",
         headers: {
