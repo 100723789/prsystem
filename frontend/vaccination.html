@@ -4,29 +4,44 @@
     <meta charset="UTF-8">
     <title>Vaccination Records | PRS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- External stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
+<!-- Chart.js for visualizing vaccination data -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- External JavaScript file -->
     <script defer src="js/scripts.js"></script>
 </head>
 <body>
+<!-- Page Header -->
     <header class="header">
         <h1>Pandemic Resilience System</h1>
+
+<!-- Logout button -->
         <button class="logout-btn" onclick="logout()">Logout</button>
     </header>
 
+<!-- Main page layout -->
     <div class="main-container">
+
+<!-- Sidebar (populated dynamically elsewhere) -->
         <nav class="sidebar" id="sidebar-container"></nav>
 
+<!-- Main content -->
         <main class="dashboard">
+
+<!-- Summary Section for Admins/Doctors -->
             <section class="chart-card" id="summarySection">
                 <h2>Vaccination Summary</h2>
                 <p id="totalRecords"></p>
                 <p id="uniqueUsers"></p>
                 <p id="avgDoses"></p>
                 <p id="mostUsedVaccine"></p>
+
+<!-- Chart showing vaccine distribution -->
                 <canvas id="vaccineChart"></canvas>
             </section>
 
+<!-- Table listing vaccination records -->
             <section class="chart-card">
                 <h2>Vaccination Records</h2>
                 <table class="user-table" id="vaccinationTable">
@@ -45,20 +60,26 @@
         </main>
     </div>
 
+<!-- Footer -->
     <footer class="footer">
         <p>&copy; 100723789</p>
     </footer>
 
+<!-- Inline script for handling data logic -->
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+        // Get token and user role from localStorage
         const token = localStorage.getItem("jwt");
         const role = parseInt(localStorage.getItem("userRole"));
 
+        // Redirect if not logged in
         if (!token) {
             window.location.href = "login.html";
             return;
         }
 
+        // Hide summary section and adjust table for public users
         if (role === 3) {
             document.getElementById("summarySection").style.display = "none";
             document.getElementById("tableHeader").innerHTML = `
@@ -68,10 +89,12 @@
                 <th>Provider</th>`;
         }
 
+        // Select appropriate API endpoint based on user role
         const endpoint = role === 3 
             ? "https://prsystem.ct.ws/api/api.php?my-vaccinations" 
             : "https://prsystem.ct.ws/api/api.php?vaccination-records";
 
+        // Fetch vaccination data
         fetch(endpoint, {
             headers: {
                 "Authorization": "Bearer " + token
@@ -84,8 +107,11 @@
             const vaccineCounts = {};
             const userSet = new Set();
 
+            // Populate table rows
             data.forEach(record => {
                 const row = document.createElement("tr");
+
+                // Public users see limited columns
                 row.innerHTML = role === 3
                     ? `<td>${record.vaccine_name}</td><td>${record.dose_number}</td><td>${record.date_administered}</td><td>${record.provider}</td>`
                     : `<td>${record.user_id}</td><td>${record.vaccine_name}</td><td>${record.dose_number}</td><td>${record.date_administered}</td><td>${record.provider}</td>`;
@@ -97,6 +123,7 @@
                 }
             });
 
+            // Populate summary section if not public user
             if (role !== 3) {
                 const total = data.length;
                 const uniqueUsers = userSet.size;
@@ -108,6 +135,7 @@
                 document.getElementById("avgDoses").textContent = "Average Doses per User: " + avgDoses;
                 document.getElementById("mostUsedVaccine").textContent = "Most Used Vaccine: " + mostUsed;
 
+                // Render chart using Chart.js
                 const ctx = document.getElementById("vaccineChart").getContext("2d");
                 new Chart(ctx, {
                     type: 'doughnut',
@@ -131,6 +159,7 @@
         });
     });
 
+    // Logout function clears user data and redirects to login
     function logout() {
         localStorage.clear();
         window.location.href = "login.html";
